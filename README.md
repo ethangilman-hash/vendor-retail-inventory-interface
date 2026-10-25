@@ -11,7 +11,8 @@ A shared inventory and purchasing planning prototype for cannabis retailers and 
 - Retailer workspace inspired by Dutchie Backoffice: inventory overview, room values, charts, and purchasing plans.
 - Distributor workspace inspired by LeafLink: blue navigation, retailer relationships, and purchasing proposals.
 - Forty planning sections across Flower, Pre-Rolls, Vaporizers, Concentrates, Edibles, Tinctures, Topicals, and Accessories.
-- Sales floor, back stock, and total inventory views; purchasing uses total inventory.
+- Sales floor, back stock, and full inventory reference tabs; purchasing uses total inventory.
+- Clickable replenishment statuses open the exact referenced sections, with room quantities and coverage.
 - Coverage targets of 7, 10, or 14 days, case-pack rounding, budget checks, proposals, and retailer approvals.
 - Searchable vendor/retailer directories with weekly, every-two-weeks, or monthly delivery preferences and internal sample notes.
 - Browser-local saved plans, account preferences, history, and CSV plan export.
@@ -66,6 +67,7 @@ Notes are separated by demo role/account in the interface and are omitted from p
 | `ui/index.html` | Application layout and category guide |
 | `ui/app.js` | Sample catalog, planning, approvals, charts, inventory views |
 | `ui/accounts.js` | Demo account directory, preferences, and notes |
+| `ui/rooms.js` | Room reference tabs and exact replenishment drill-downs |
 | `ui/leaf-style.css` | Base/LeafLink-inspired visual theme |
 | `ui/retailer-style.css` | Retailer/Dutchie-inspired theme |
 | `ui/accounts.css` | Account screens and distributor blue sidebar |

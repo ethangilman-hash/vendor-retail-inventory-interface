@@ -54,3 +54,7 @@ The login upgrade replaces the former static deployment with a server Worker whi
 Current deployment: https://par-planning-pilot.wholehero2.chatgpt.site/
 
 This GitHub repository is a source snapshot with documentation/tests added. No automatic GitHub deployment exists. The browser app remains in `ui/`; the login upgrade adds a logout button and server gate. Preserve the existing Site identity and private audience unless the user requests otherwise.
+
+## Room inventory reference
+
+`ui/rooms.js` owns the overview room tabs and section drill-downs. `roomSections(category, restockOnly)` uses the same `needsShelfRestock` predicate as the displayed counts: less than two days of sales-floor stock, with back stock available. Clicking an alert shows only those rows; clicking Floor covered shows all category rows for verification. Both views share the room selection. The suggested shelf move is explanatory and never alters stock or creates a purchasing order. `tests/rooms.cjs` checks count/detail parity, covered categories, quantity totals, and boundary cases.
