@@ -2,7 +2,7 @@
 
 A shared inventory and purchasing planning prototype for cannabis retailers and distributors.
 
-**Status: sample-data prototype.** No live LeafLink or Dutchie connection, real orders, or authenticated business accounts exist yet.
+**Status: sample-data prototype with a shared demo login.** No live LeafLink or Dutchie connection, real orders, or individual business accounts exist yet.
 
 [Open the private hosted prototype](https://par-planning-pilot.wholehero2.chatgpt.site/)
 
@@ -20,21 +20,31 @@ Par is the working name in the interface. This is an independent prototype, not 
 
 ## Run locally
 
-Install Python 3, then run from this repository:
+Use Node.js 22.13 or later and npm. Install the locked dependencies:
 
 ```sh
-python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
+npm ci
 ```
 
-Open http://127.0.0.1:4173 in your browser. No package installation, build step, or API key is required. Node.js 20 or later is used only for checks:
+Create an ignored `.env.local` using `.env.example` as the list of required keys. Configure `DEMO_USERNAME`, a salted PBKDF2-SHA256 password verifier (`pbkdf2-sha256:100000:<salt hex>:<digest hex>`), and a cryptographically random `DEMO_SESSION_SECRET`. Hosted credentials are managed through Sites runtime secrets and are intentionally absent from GitHub.
+
+Start the local authenticated preview:
 
 ```sh
-npm test
+node --env-file=.env.local scripts/demo-server.mjs
 ```
+
+Open http://127.0.0.1:4173. Run checks with `npm test`. Build with `npm run build`.
+
+### Authentication
+
+A server-side credential check gates every application page and asset. The eight-hour session is signed and uses an HttpOnly, SameSite cookie, with Secure cookies on HTTPS. Hosted sessions bind to the existing Sites visitor identity. Login and logout POSTs require the same request origin. Basic per-process failed-attempt throttling is included; it is not a distributed account-security system.
+
+The shared demo login is an additional gate. The Site's private ChatGPT access policy remains unchanged; these credentials alone do not grant another person access to the private Site. Demo role switching is still not individual account authorization, and browser-local notes remain demonstration data.
 
 ## Try the workflow
 
-1. Start in **Retailer view** and review the Inventory overview.
+1. Log in, then start in **Retailer view** and review the Inventory overview.
 2. Open **Purchasing plan**, adjust the budget and quantities, and request distributor confirmation. The sample plan may exceed its starting budget; adjust it before approval.
 3. Switch to **Distributor view** and submit the proposal.
 4. Switch back to Retailer view and approve the plan.
@@ -53,21 +63,24 @@ Notes are separated by demo role/account in the interface and are omitted from p
 
 | Path | Purpose |
 | --- | --- |
-| `dist/index.html` | Application layout and category guide |
-| `dist/app.js` | Sample catalog, planning, approvals, charts, inventory views |
-| `dist/accounts.js` | Demo account directory, preferences, and notes |
-| `dist/leaf-style.css` | Base/LeafLink-inspired visual theme |
-| `dist/retailer-style.css` | Retailer/Dutchie-inspired theme |
-| `dist/accounts.css` | Account screens and distributor blue sidebar |
-| `tests/` | Planning migration and account-storage checks |
+| `ui/index.html` | Application layout and category guide |
+| `ui/app.js` | Sample catalog, planning, approvals, charts, inventory views |
+| `ui/accounts.js` | Demo account directory, preferences, and notes |
+| `ui/leaf-style.css` | Base/LeafLink-inspired visual theme |
+| `ui/retailer-style.css` | Retailer/Dutchie-inspired theme |
+| `ui/accounts.css` | Account screens and distributor blue sidebar |
+| `worker/auth.mjs` | Password verifier, session validation, and login/logout routes |
+| `worker/index.ts` | Supported Sites/Vinext Worker with the credential gate |
+| `scripts/embed-ui.mjs` | Embed protected UI source into the server build |
+| `tests/` | Authentication, planning migration, and account-storage checks |
 | `docs/` | Architecture, handoff, and Oregon category research |
 | `.openai/hosting.json` | Existing private Sites deployment identity; contains no credentials |
 
 ## GitHub and deployment
 
-This repository contains a snapshot of the prototype source deployed through Sites at source commit `ce788cf92a42709ab35e725d4929e2fe110976e9`.
+This repository contains the prototype source and the server-based demo login. Application source now lives in `ui/`; `dist/` is generated server output and is ignored. The supported Sites/Vinext build integration is preserved.
 
-The existing private Sites URL remains the live application. This initial GitHub upload does **not** configure GitHub Pages or automatic deployment. GitHub and Sites are separate remotes; changes must be deliberately synchronized. Do not create another Site or change the existing `project_id` when updating the current deployment.
+The existing private Sites URL remains the live application. This GitHub repository does **not** configure GitHub Pages or automatic deployment. The password-protected application requires a server runtime; serving `ui/` as an ordinary static site does not provide authentication. GitHub and Sites are separate remotes; changes must be deliberately synchronized. Do not create another Site or change the existing `project_id` when updating the current deployment.
 
 ## Next development steps
 
