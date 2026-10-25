@@ -1,0 +1,12 @@
+{
+  "name": "vendor-retail-inventory-interface",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared retailer/distributor inventory planning prototype",
+  "scripts": {
+    "dev": "python3 -m http.server 4173 --bind 127.0.0.1 --directory dist",
+    "check": "node --check dist/app.js && node --check dist/accounts.js",
+    "test": "npm run check && node tests/taxonomy.cjs && node tests/accounts.cjs"
+  },
+  "engines": { "node": ">=20" }
+}
